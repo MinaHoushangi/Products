@@ -12,6 +12,7 @@ module.exports = {
           '@hooks': './src/hooks',
           '@assets': './src/assets',
           '@theme': './src/theme',
+          '@types': './src/types',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },

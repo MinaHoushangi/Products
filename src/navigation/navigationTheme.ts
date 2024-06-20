@@ -10,6 +10,7 @@ const MyLightTheme = {
     background: colors.light.background,
     text: colors.light.text,
     border: colors.light.border,
+    textDark: colors.light.textDark,
   },
 };
 
@@ -21,6 +22,7 @@ const MyDarkTheme = {
     background: colors.dark.background,
     text: colors.dark.text,
     border: colors.dark.border,
+    textDark: colors.dark.textDark,
   },
 };
 

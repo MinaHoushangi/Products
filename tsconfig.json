@@ -9,7 +9,8 @@
       "@navigation/*": ["./src/navigation/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@assets/*": ["./src/assets/*"],
-      "@theme/*": ["./src/theme/*"]
+      "@theme/*": ["./src/theme/*"],
+      "@types/*": ["./src/types/*"]
     }
   }
 }

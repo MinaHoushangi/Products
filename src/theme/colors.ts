@@ -6,18 +6,18 @@ export default {
   light: {
     // Neutral Colors
     background: '#fff',
-    text: '#000',
-    textLight: '#cccccc',
-    textDark: '#888888',
-    border: '#888888',
-    muted: '#cccccc',
+    text: '#888',
+    textLight: '#ccc',
+    textDark: '#000',
+    border: '#ccc',
+    muted: '#ccc',
   },
   dark: {
     // Neutral Colors
-    background: '#000',
-    text: '#fff',
-    textLight: '#888',
-    textDark: '#ccc',
+    background: '#111',
+    text: '#eee',
+    textLight: '#222',
+    textDark: '#fff',
     border: '#ccc',
     muted: '#888',
   },
