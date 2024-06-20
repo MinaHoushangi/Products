@@ -11,6 +11,7 @@ module.exports = {
           '@screens': './src/screens',
           '@hooks': './src/hooks',
           '@assets': './src/assets',
+          '@theme': './src/theme',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
