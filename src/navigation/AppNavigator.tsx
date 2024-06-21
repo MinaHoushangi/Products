@@ -22,6 +22,8 @@ function AppNavigator() {
       <ProductStack.Screen
         name={routes.PRODUCTDETAILS}
         component={ProductDetailsScreen}
+        options={{animation: 'slide_from_right'}}
+        getId={({params}) => params?.product?.id?.toString()}
       />
     </ProductStack.Navigator>
   );
