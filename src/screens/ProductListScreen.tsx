@@ -1,5 +1,6 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import Card from '@components/Card';
 import {
@@ -7,6 +8,8 @@ import {
   horizontalScale,
   verticalScale,
 } from '@constants/dimensions';
+import routes from '@navigation/routes';
+import {Product} from 'src/types/Product';
 
 const fakeData = [
   {
@@ -15,6 +18,8 @@ const fakeData = [
       'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
     price: '$100',
     name: 'Sun Flower',
+    description:
+      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
   },
   {
     id: 2,
@@ -22,6 +27,8 @@ const fakeData = [
       'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
     price: '$100',
     name: 'Sun Flower',
+    description:
+      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
   },
   {
     id: 3,
@@ -29,6 +36,8 @@ const fakeData = [
       'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
     price: '$100',
     name: 'Sun Flower',
+    description:
+      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
   },
   {
     id: 4,
@@ -36,6 +45,8 @@ const fakeData = [
       'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
     price: '$100',
     name: 'Sun Flower',
+    description:
+      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
   },
   {
     id: 5,
@@ -43,6 +54,8 @@ const fakeData = [
       'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
     price: '$100',
     name: 'Sun Flower',
+    description:
+      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
   },
   {
     id: 6,
@@ -50,6 +63,8 @@ const fakeData = [
       'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
     price: '$100',
     name: 'Sun Flower',
+    description:
+      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
   },
   {
     id: 7,
@@ -57,6 +72,8 @@ const fakeData = [
       'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
     price: '$100',
     name: 'Sun Flower',
+    description:
+      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
   },
 ];
 
@@ -64,7 +81,31 @@ const fakeData = [
  * ProductListScreen is for rendering list of products from server
  */
 
+type RenderItemProps = {
+  item: Product;
+  index: number;
+};
+
 function ProductListScreen() {
+  const {navigate} = useNavigation();
+
+  const renderItem = ({item, index}: RenderItemProps) => {
+    const shouldAddSpacer =
+      LIST_NUM_OF_COLUMNS === 2 ? index % 2 === 0 : index % 3 !== 2;
+
+    return (
+      <View style={styles.listItemContainer}>
+        <Card
+          imageUri={item.image}
+          onPress={() => navigate(routes.PRODUCTDETAILS, {product: item})}
+          title={item.name}
+          text={item.price}
+        />
+        {shouldAddSpacer && <View style={styles.horizontalSeparator} />}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -74,6 +115,7 @@ function ProductListScreen() {
         numColumns={LIST_NUM_OF_COLUMNS}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
+        ListFooterComponent={ListItemSeparator}
       />
     </View>
   );
@@ -81,30 +123,19 @@ function ProductListScreen() {
 
 const ListItemSeparator = () => <View style={styles.verticalSeparator} />;
 
-const renderItem = ({item, index}) => {
-  const shouldAddSpacer =
-    LIST_NUM_OF_COLUMNS === 2 ? index % 2 === 0 : index % 3 !== 2;
-
-  return (
-    <View style={styles.listItemContainer}>
-      <Card imageUri={item.image} title={item.name} text={item.price} />
-      {shouldAddSpacer && <View style={styles.horizontalSeparator} />}
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     padding: horizontalScale(16),
+    paddingBottom: 1,
   },
   listItemContainer: {flexDirection: 'row'},
   horizontalSeparator: {
     width: horizontalScale(16),
   },
   verticalSeparator: {
-    height: verticalScale(20),
+    height: verticalScale(16),
     width: '100%',
   },
 });

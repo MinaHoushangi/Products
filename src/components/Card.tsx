@@ -1,5 +1,11 @@
 import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 
 import MyAppHeaderText from './MyAppHeaderText';
@@ -13,13 +19,14 @@ import {horizontalScale, verticalScale} from '@constants/dimensions';
 
 type CardProps = {
   imageUri: string;
+  onPress: () => void;
   title: string;
   text: string;
 };
 
 const BORDER_RADIUS = 4;
 
-function Card({imageUri, text = '', title = ''}: CardProps) {
+function Card({imageUri, onPress, text = '', title = ''}: CardProps) {
   const theme = useTheme();
 
   const myStyles = styles(theme);
@@ -29,27 +36,42 @@ function Card({imageUri, text = '', title = ''}: CardProps) {
     : require('@assets/images/placeholder-image.png');
 
   return (
-    <View style={myStyles.container}>
-      <Image source={uri} style={myStyles.image} />
-      <MyAppHeaderText style={myStyles.text}>{title}</MyAppHeaderText>
-      <MyAppText style={myStyles.text}>{text}</MyAppText>
-    </View>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={myStyles.container}>
+        <Image source={uri} style={myStyles.image} />
+        <MyAppHeaderText style={myStyles.text}>{title}</MyAppHeaderText>
+        <MyAppText style={myStyles.text}>{text}</MyAppText>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = (theme: MyTheme) =>
   StyleSheet.create({
     container: {
+      backgroundColor: theme.colors.background,
       borderColor: theme.colors.border,
       borderRadius: BORDER_RADIUS,
-      borderWidth: horizontalScale(0.7),
+      borderWidth: horizontalScale(0.5),
       padding: horizontalScale(6),
-      width: horizontalScale(160),
+      shadowColor: theme.colors.primary,
+      width: horizontalScale(161.5),
+      marginHorizontal: 1,
+      ...Platform.select({
+        ios: {
+          shadowOffset: {width: 6, height: 6},
+          shadowOpacity: 0.8,
+          shadowRadius: 4,
+        },
+        android: {
+          elevation: 2,
+        },
+      }),
     },
     image: {
       alignSelf: 'center',
       borderRadius: BORDER_RADIUS,
-      height: horizontalScale(160),
+      height: horizontalScale(161.5),
       width: '100%',
     },
     text: {
