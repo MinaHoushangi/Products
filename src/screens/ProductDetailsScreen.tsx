@@ -9,6 +9,7 @@ import {
 import {Product} from 'src/types/Product';
 import MyAppHeaderText from 'src/components/MyAppHeaderText';
 import MyAppText from 'src/components/MyAppText';
+import BackButton from '@components/BackButton';
 
 function ProductDetailsScreen({route}) {
   const product: Product = route.params?.product;
@@ -28,6 +29,7 @@ function ProductDetailsScreen({route}) {
       <Image
         source={{uri: product.image, height: imageHeight, width: WINDOW_WIDTH}}
       />
+      <BackButton />
       <View style={styles.descriptionContainer}>
         <MyAppHeaderText style={styles.text}>{product.name}</MyAppHeaderText>
         <MyAppText style={styles.text}>{product.description}</MyAppText>
