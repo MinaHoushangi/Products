@@ -5,14 +5,16 @@ import {useNavigation} from '@react-navigation/native';
 import Card from '@components/Card';
 import {
   LIST_NUM_OF_COLUMNS,
+  SCREEN_PADDING,
   horizontalScale,
-  verticalScale,
 } from '@constants/dimensions';
 import routes from '@navigation/routes';
 import {Product} from 'src/types/Product';
 import useApi from '@hooks/useApi';
 import productListApi from '@api/productList';
 import {NUMBER_OF_ITEMS_PER_API_CALL} from '@constants/config';
+import ListFooter from '@components/ListFooter';
+import ListItemSeparator from '@components/ListItemSeparator';
 
 /**
  * ProductListScreen is for rendering list of products from server
@@ -93,29 +95,23 @@ function ProductListScreen() {
         numColumns={LIST_NUM_OF_COLUMNS}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        ListFooterComponent={ListItemSeparator}
+        ListFooterComponent={<ListFooter isVisible={hasMoreData} />}
         onEndReached={onEndReached}
       />
     </View>
   );
 }
 
-const ListItemSeparator = () => <View style={styles.verticalSeparator} />;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    padding: horizontalScale(16),
+    padding: SCREEN_PADDING,
     paddingBottom: 1,
   },
   listItemContainer: {flexDirection: 'row'},
   horizontalSeparator: {
-    width: horizontalScale(16),
-  },
-  verticalSeparator: {
-    height: verticalScale(16),
-    width: '100%',
+    width: horizontalScale(SCREEN_PADDING),
   },
 });
 

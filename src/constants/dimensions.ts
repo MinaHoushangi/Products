@@ -35,3 +35,5 @@ export const verticalScale = (size: number) =>
  */
 export const moderateScale = (size: number, factor = 0.5) =>
   size + (horizontalScale(size) - size) * factor;
+
+export const SCREEN_PADDING = horizontalScale(16);

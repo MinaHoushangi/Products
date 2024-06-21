@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Image, ScrollView, StyleSheet, View} from 'react-native';
 
 import {
+  SCREEN_PADDING,
   WINDOW_WIDTH,
   horizontalScale,
   verticalScale,
@@ -69,7 +70,7 @@ function ProductDetailsScreen({route}) {
 
 const styles = StyleSheet.create({
   descriptionContainer: {
-    padding: horizontalScale(16),
+    padding: horizontalScale(SCREEN_PADDING),
   },
   priceText: {
     fontWeight: 'bold',
