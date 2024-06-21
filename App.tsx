@@ -5,7 +5,12 @@
  */
 
 import React from 'react';
-import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  useColorScheme,
+} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import AppNavigator from '@navigation/AppNavigator';
@@ -22,7 +27,7 @@ function App(): React.JSX.Element {
 
   return (
     <NavigationContainer theme={isDarkMode ? MyDarkTheme : MyLightTheme}>
-      <SafeAreaView style={backgroundStyle}>
+      <SafeAreaView style={[backgroundStyle, styles.container]}>
         <StatusBar
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={backgroundStyle.backgroundColor}
@@ -32,5 +37,11 @@ function App(): React.JSX.Element {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default App;

@@ -8,4 +8,4 @@ interface MyTheme {
   };
 }
 
-export {MyTheme};
+export type {MyTheme};
