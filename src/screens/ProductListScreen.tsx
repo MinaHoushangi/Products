@@ -15,6 +15,7 @@ import productListApi from '@api/productList';
 import {NUMBER_OF_ITEMS_PER_API_CALL} from '@constants/config';
 import ListFooter from '@components/ListFooter';
 import ListItemSeparator from '@components/ListItemSeparator';
+import PlaceholderList from 'src/components/PlaceholderList';
 
 /**
  * ProductListScreen is for rendering list of products from server
@@ -87,17 +88,21 @@ function ProductListScreen() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={products}
-        keyExtractor={item => item.id.toString()}
-        initialNumToRender={10}
-        ItemSeparatorComponent={ListItemSeparator}
-        numColumns={LIST_NUM_OF_COLUMNS}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        ListFooterComponent={<ListFooter isVisible={hasMoreData} />}
-        onEndReached={onEndReached}
-      />
+      {products.length === 0 && loading ? (
+        <PlaceholderList />
+      ) : (
+        <FlatList
+          data={products}
+          keyExtractor={item => item.id.toString()}
+          initialNumToRender={10}
+          ItemSeparatorComponent={ListItemSeparator}
+          numColumns={LIST_NUM_OF_COLUMNS}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={<ListFooter isVisible={hasMoreData} />}
+          onEndReached={onEndReached}
+        />
+      )}
     </View>
   );
 }

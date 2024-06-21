@@ -2,6 +2,7 @@ export default {
   //primary colors
   primary: '#d09182',
   primaryLight: '#d5ac9a',
+  accent: '#c5b1b3',
 
   light: {
     // Neutral Colors

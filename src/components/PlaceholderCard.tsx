@@ -1,48 +1,34 @@
 import React from 'react';
-import {
-  ImageBackground,
-  Platform,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 
-import MyAppHeaderText from './MyAppHeaderText';
-import MyAppText from './MyAppText';
 import {MyTheme} from 'src/types/theme';
 import {horizontalScale, verticalScale} from '@constants/dimensions';
+import Fade from './Fade';
 
 /**
- * Card component is to render list items generally (here a product)
+ * Placeholder for Card component
  */
-
-type CardProps = {
-  imageUri: string;
-  onPress: () => void;
-  title: string;
-  text: string;
-};
 
 const BORDER_RADIUS = 4;
 
-function Card({imageUri, onPress, text = '', title = ''}: CardProps) {
+function PlaceholderCard() {
   const theme = useTheme();
 
   const myStyles = styles(theme);
 
-  const uri = imageUri
-    ? {uri: imageUri}
-    : require('@assets/images/placeholder-image.png');
-
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
-      <View style={myStyles.container}>
-        <ImageBackground source={uri} style={myStyles.image} />
-        <MyAppHeaderText style={myStyles.text}>{title}</MyAppHeaderText>
-        <MyAppText style={myStyles.text}>{text}</MyAppText>
+    <View style={myStyles.container}>
+      <View style={myStyles.image}>
+        <Fade />
       </View>
-    </TouchableWithoutFeedback>
+      <View style={myStyles.text}>
+        <Fade />
+      </View>
+      <View style={myStyles.price}>
+        <Fade />
+      </View>
+    </View>
   );
 }
 
@@ -70,15 +56,22 @@ const styles = (theme: MyTheme) =>
     },
     image: {
       alignSelf: 'center',
-      backgroundColor: theme.colors.lightGrayBackground,
+      backgroundColor: theme.colors.accent,
       borderRadius: BORDER_RADIUS,
-      height: horizontalScale(161.5),
+      height: horizontalScale(150),
       width: '100%',
     },
+    price: {
+      backgroundColor: theme.colors.accent,
+      height: 16,
+      marginTop: verticalScale(8),
+      width: horizontalScale(150) / 2,
+    },
     text: {
-      fontWeight: 'bold',
+      backgroundColor: theme.colors.accent,
+      height: 20,
       marginTop: verticalScale(8),
     },
   });
 
-export default Card;
+export default PlaceholderCard;

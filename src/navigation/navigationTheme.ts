@@ -6,7 +6,9 @@ const MyLightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
+    accent: colors.accent,
     primary: colors.primary,
+    primaryLight: colors.primaryLight,
     background: colors.light.background,
     text: colors.light.text,
     border: colors.light.border,
@@ -19,7 +21,9 @@ const MyDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
+    accent: colors.accent,
     primary: colors.primary,
+    primaryLight: colors.primaryLight,
     background: colors.dark.background,
     text: colors.dark.text,
     border: colors.dark.border,
