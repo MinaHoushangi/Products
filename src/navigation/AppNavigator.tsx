@@ -14,7 +14,7 @@ function AppNavigator() {
   const ProductStack = createNativeStackNavigator();
 
   return (
-    <ProductStack.Navigator>
+    <ProductStack.Navigator screenOptions={{headerShown: false}}>
       <ProductStack.Screen
         name={routes.PRODUCTLIST}
         component={ProductListScreen}

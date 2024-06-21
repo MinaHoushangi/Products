@@ -1,7 +1,112 @@
 import React from 'react';
+import {FlatList, StyleSheet, View} from 'react-native';
+
+import Card from '@components/Card';
+import {
+  LIST_NUM_OF_COLUMNS,
+  horizontalScale,
+  verticalScale,
+} from '@constants/dimensions';
+
+const fakeData = [
+  {
+    id: 1,
+    image:
+      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
+    price: '$100',
+    name: 'Sun Flower',
+  },
+  {
+    id: 2,
+    image:
+      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
+    price: '$100',
+    name: 'Sun Flower',
+  },
+  {
+    id: 3,
+    image:
+      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
+    price: '$100',
+    name: 'Sun Flower',
+  },
+  {
+    id: 4,
+    image:
+      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
+    price: '$100',
+    name: 'Sun Flower',
+  },
+  {
+    id: 5,
+    image:
+      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
+    price: '$100',
+    name: 'Sun Flower',
+  },
+  {
+    id: 6,
+    image:
+      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
+    price: '$100',
+    name: 'Sun Flower',
+  },
+  {
+    id: 7,
+    image:
+      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
+    price: '$100',
+    name: 'Sun Flower',
+  },
+];
+
+/**
+ * ProductListScreen is for rendering list of products from server
+ */
 
 function ProductListScreen() {
-  return <></>;
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={fakeData}
+        keyExtractor={item => item.id.toString()}
+        ItemSeparatorComponent={ListItemSeparator}
+        numColumns={LIST_NUM_OF_COLUMNS}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
 }
+
+const ListItemSeparator = () => <View style={styles.verticalSeparator} />;
+
+const renderItem = ({item, index}) => {
+  const shouldAddSpacer =
+    LIST_NUM_OF_COLUMNS === 2 ? index % 2 === 0 : index % 3 !== 2;
+
+  return (
+    <View style={styles.listItemContainer}>
+      <Card imageUri={item.image} title={item.name} text={item.price} />
+      {shouldAddSpacer && <View style={styles.horizontalSeparator} />}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    padding: horizontalScale(16),
+  },
+  listItemContainer: {flexDirection: 'row'},
+  horizontalSeparator: {
+    width: horizontalScale(16),
+  },
+  verticalSeparator: {
+    height: verticalScale(20),
+    width: '100%',
+  },
+});
 
 export default ProductListScreen;
