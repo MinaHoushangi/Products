@@ -10,11 +10,35 @@ import {Product} from 'src/types/Product';
 import MyAppHeaderText from 'src/components/MyAppHeaderText';
 import MyAppText from 'src/components/MyAppText';
 import BackButton from '@components/BackButton';
+import useApi from 'src/hooks/useApi';
+import productDetailsApi from '@api/productDetails';
+
+type Details = {
+  description: string;
+};
 
 function ProductDetailsScreen({route}) {
   const product: Product = route.params?.product;
 
+  const {request} = useApi(productDetailsApi.getProductList);
+
   const [imageHeight, setImageHeight] = useState<number>(0);
+  const [details, setDetails] = useState<Details>({description: ''});
+
+  const fetchProdunctDetals = async () => {
+    try {
+      const response = await request();
+      if (!response || response.status !== 200) {
+        throw new Error("Can't get product details");
+      }
+
+      setDetails({
+        description: response.data?.body,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
     Image.getSize(product.image, (width, height) => {
@@ -22,7 +46,9 @@ function ProductDetailsScreen({route}) {
       const aspectRatio = width / height;
       setImageHeight(WINDOW_WIDTH / aspectRatio);
     });
-  }, [product.image]);
+
+    fetchProdunctDetals();
+  }, []);
 
   return (
     <ScrollView>
@@ -32,7 +58,7 @@ function ProductDetailsScreen({route}) {
       <BackButton />
       <View style={styles.descriptionContainer}>
         <MyAppHeaderText style={styles.text}>{product.name}</MyAppHeaderText>
-        <MyAppText style={styles.text}>{product.description}</MyAppText>
+        <MyAppText style={styles.text}>{details.description}</MyAppText>
         <MyAppText style={[styles.priceText, styles.text]}>
           {product.price}
         </MyAppText>
