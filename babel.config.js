@@ -13,6 +13,7 @@ module.exports = {
           '@assets': './src/assets',
           '@theme': './src/theme',
           '@types': './src/types',
+          '@constants': './src/constants',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
