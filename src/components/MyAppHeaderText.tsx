@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, TextStyle} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 
-import {MyTheme} from '@types/theme';
+import {MyTheme} from 'src/types/theme';
 import MyAppText from './MyAppText';
 
 /**
@@ -11,7 +11,7 @@ import MyAppText from './MyAppText';
 
 interface MyAppHeaderTextProps {
   children: React.ReactNode;
-  style?: TextStyle;
+  style?: TextStyle | TextStyle[];
 }
 
 function MyAppHeaderText({children, style}: MyAppHeaderTextProps) {

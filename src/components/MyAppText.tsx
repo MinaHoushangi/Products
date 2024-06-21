@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TextStyle} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 
-import {MyTheme} from '@types/theme';
+import {MyTheme} from 'src/types/theme';
 
 /**
  * Regular text component with custom style
@@ -10,7 +10,7 @@ import {MyTheme} from '@types/theme';
 
 interface MyAppTextProps {
   children: React.ReactNode;
-  style?: TextStyle;
+  style?: TextStyle | TextStyle[];
 }
 
 function MyAppText({children, style}: MyAppTextProps) {

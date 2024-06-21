@@ -5,6 +5,7 @@ interface MyTheme {
     text: string;
     border: string;
     textDark: string;
+    lightGrayBackground: string;
   };
 }
 
