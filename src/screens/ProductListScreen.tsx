@@ -17,6 +17,7 @@ import ListFooter from '@components/ListFooter';
 import ListItemSeparator from '@components/ListItemSeparator';
 import PlaceholderList from '@components/PlaceholderList';
 import AppSearchBar from '@components/AppSearchBar';
+import {getSeatchText} from '@utils/stringUtils';
 
 /**
  * ProductListScreen is for rendering list of products from server
@@ -31,7 +32,8 @@ function ProductListScreen() {
   const {navigate} = useNavigation();
   const {loading, request} = useApi(productListApi.getProductList);
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(allProducts);
   const [offset, setOffset] = useState(0);
   const [hasMoreData, setHasMoreData] = useState(true);
   const [searchText, setSearchText] = useState('');
@@ -74,7 +76,8 @@ function ProductListScreen() {
         setHasMoreData(false);
       }
 
-      setProducts(prev => [...prev, ...items]);
+      setAllProducts(prev => [...prev, ...items]);
+
       setOffset(prev => prev + 1);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -88,6 +91,29 @@ function ProductListScreen() {
   };
 
   useEffect(() => {
+    const searchString = getSeatchText(searchText);
+
+    if (searchString.length === 0) {
+      setProducts(allProducts);
+      setHasMoreData(true);
+      return;
+    }
+
+    const searchedProducts = allProducts.filter(p =>
+      getSeatchText(p.name).includes(searchString),
+    );
+
+    setHasMoreData(false);
+    setProducts(searchedProducts);
+  }, [searchText, allProducts]);
+
+  const onClear = () => {
+    setProducts(allProducts);
+    setHasMoreData(true);
+    setSearchText('');
+  };
+
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -96,12 +122,12 @@ function ProductListScreen() {
       <View style={styles.searchBarContainer}>
         <AppSearchBar
           onChangeText={setSearchText}
-          onClear={() => setSearchText('')}
+          onClear={onClear}
           placeholder="Search by product name"
           value={searchText}
         />
       </View>
-      {products.length === 0 && loading ? (
+      {allProducts.length === 0 && loading ? (
         <PlaceholderList />
       ) : (
         <FlatList
@@ -112,7 +138,9 @@ function ProductListScreen() {
           numColumns={LIST_NUM_OF_COLUMNS}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
-          ListFooterComponent={<ListFooter isVisible={hasMoreData} />}
+          ListFooterComponent={
+            <ListFooter isVisible={hasMoreData && products.length > 0} />
+          }
           onEndReached={onEndReached}
           onEndReachedThreshold={0.3}
         />
@@ -124,7 +152,7 @@ function ProductListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: SCREEN_PADDING,
     paddingBottom: 1,
   },
@@ -133,6 +161,7 @@ const styles = StyleSheet.create({
   },
   listItemContainer: {flexDirection: 'row'},
   searchBarContainer: {
+    alignItems: 'center',
     marginBottom: SCREEN_PADDING,
   },
 });

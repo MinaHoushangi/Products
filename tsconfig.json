@@ -12,7 +12,8 @@
       "@theme/*": ["./src/theme/*"],
       "@types/*": ["./src/types/*"],
       "@constants/*": ["./src/constants/*"],
-      "@api/*": ["./src/api/*"]
+      "@api/*": ["./src/api/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   }
 }
