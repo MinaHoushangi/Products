@@ -14,6 +14,7 @@ module.exports = {
           '@theme': './src/theme',
           '@types': './src/types',
           '@constants': './src/constants',
+          '@api': './src/api',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },

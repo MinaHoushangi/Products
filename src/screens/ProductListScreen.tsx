@@ -1,81 +1,21 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import Card from '@components/Card';
 import {
   LIST_NUM_OF_COLUMNS,
+  SCREEN_PADDING,
   horizontalScale,
-  verticalScale,
 } from '@constants/dimensions';
 import routes from '@navigation/routes';
 import {Product} from 'src/types/Product';
-
-const fakeData = [
-  {
-    id: 1,
-    image:
-      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
-    price: '$100',
-    name: 'Sun Flower',
-    description:
-      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
-  },
-  {
-    id: 2,
-    image:
-      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
-    price: '$100',
-    name: 'Sun Flower',
-    description:
-      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
-  },
-  {
-    id: 3,
-    image:
-      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
-    price: '$100',
-    name: 'Sun Flower',
-    description:
-      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
-  },
-  {
-    id: 4,
-    image:
-      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
-    price: '$100',
-    name: 'Sun Flower',
-    description:
-      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
-  },
-  {
-    id: 5,
-    image:
-      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
-    price: '$100',
-    name: 'Sun Flower',
-    description:
-      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
-  },
-  {
-    id: 6,
-    image:
-      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
-    price: '$100',
-    name: 'Sun Flower',
-    description:
-      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
-  },
-  {
-    id: 7,
-    image:
-      'https://cdn.britannica.com/84/73184-050-05ED59CB/Sunflower-field-Fargo-North-Dakota.jpg',
-    price: '$100',
-    name: 'Sun Flower',
-    description:
-      'The common sunflower (Helianthus annuus) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.',
-  },
-];
+import useApi from '@hooks/useApi';
+import productListApi from '@api/productList';
+import {NUMBER_OF_ITEMS_PER_API_CALL} from '@constants/config';
+import ListFooter from '@components/ListFooter';
+import ListItemSeparator from '@components/ListItemSeparator';
+import PlaceholderList from 'src/components/PlaceholderList';
 
 /**
  * ProductListScreen is for rendering list of products from server
@@ -88,6 +28,11 @@ type RenderItemProps = {
 
 function ProductListScreen() {
   const {navigate} = useNavigation();
+  const {loading, request} = useApi(productListApi.getProductList);
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [offset, setOffset] = useState(0);
+  const [hasMoreData, setHasMoreData] = useState(true);
 
   const renderItem = ({item, index}: RenderItemProps) => {
     const shouldAddSpacer =
@@ -106,37 +51,76 @@ function ProductListScreen() {
     );
   };
 
+  const fetchProducts = async () => {
+    if (loading) return;
+
+    try {
+      const response = await request(offset);
+
+      if (!response || response.status !== 200) {
+        throw new Error('Failed to fetch products');
+      }
+
+      const items: Product[] = response.data.map(item => ({
+        id: item.id,
+        name: item.title,
+        image: item.url,
+        price: `$${(Math.random() * 100).toFixed(2)}`, // Random price for demonstration
+      }));
+
+      if (items.length < NUMBER_OF_ITEMS_PER_API_CALL) {
+        setHasMoreData(false);
+      }
+
+      setProducts(prev => [...prev, ...items]);
+      setOffset(prev => prev + 1);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  const onEndReached = async () => {
+    if (!loading && hasMoreData) {
+      await fetchProducts();
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={fakeData}
-        keyExtractor={item => item.id.toString()}
-        ItemSeparatorComponent={ListItemSeparator}
-        numColumns={LIST_NUM_OF_COLUMNS}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        ListFooterComponent={ListItemSeparator}
-      />
+      {products.length === 0 && loading ? (
+        <PlaceholderList />
+      ) : (
+        <FlatList
+          data={products}
+          keyExtractor={item => item.id.toString()}
+          initialNumToRender={10}
+          ItemSeparatorComponent={ListItemSeparator}
+          numColumns={LIST_NUM_OF_COLUMNS}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={<ListFooter isVisible={hasMoreData} />}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={0.3}
+        />
+      )}
     </View>
   );
 }
-
-const ListItemSeparator = () => <View style={styles.verticalSeparator} />;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    padding: horizontalScale(16),
+    padding: SCREEN_PADDING,
     paddingBottom: 1,
   },
   listItemContainer: {flexDirection: 'row'},
   horizontalSeparator: {
-    width: horizontalScale(16),
-  },
-  verticalSeparator: {
-    height: verticalScale(16),
-    width: '100%',
+    width: horizontalScale(SCREEN_PADDING),
   },
 });
 
