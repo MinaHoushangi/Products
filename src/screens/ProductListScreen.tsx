@@ -15,7 +15,8 @@ import productListApi from '@api/productList';
 import {NUMBER_OF_ITEMS_PER_API_CALL} from '@constants/config';
 import ListFooter from '@components/ListFooter';
 import ListItemSeparator from '@components/ListItemSeparator';
-import PlaceholderList from 'src/components/PlaceholderList';
+import PlaceholderList from '@components/PlaceholderList';
+import AppSearchBar from '@components/AppSearchBar';
 
 /**
  * ProductListScreen is for rendering list of products from server
@@ -33,6 +34,7 @@ function ProductListScreen() {
   const [products, setProducts] = useState<Product[]>([]);
   const [offset, setOffset] = useState(0);
   const [hasMoreData, setHasMoreData] = useState(true);
+  const [searchText, setSearchText] = useState('');
 
   const renderItem = ({item, index}: RenderItemProps) => {
     const shouldAddSpacer =
@@ -91,6 +93,14 @@ function ProductListScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.searchBarContainer}>
+        <AppSearchBar
+          onChangeText={setSearchText}
+          onClear={() => setSearchText('')}
+          placeholder="Search by product name"
+          value={searchText}
+        />
+      </View>
       {products.length === 0 && loading ? (
         <PlaceholderList />
       ) : (
@@ -118,9 +128,12 @@ const styles = StyleSheet.create({
     padding: SCREEN_PADDING,
     paddingBottom: 1,
   },
-  listItemContainer: {flexDirection: 'row'},
   horizontalSeparator: {
     width: horizontalScale(SCREEN_PADDING),
+  },
+  listItemContainer: {flexDirection: 'row'},
+  searchBarContainer: {
+    marginBottom: SCREEN_PADDING,
   },
 });
 

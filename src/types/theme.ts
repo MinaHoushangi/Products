@@ -8,6 +8,7 @@ interface MyTheme {
     border: string;
     textDark: string;
     lightGrayBackground: string;
+    textLight: string;
   };
 }
 
