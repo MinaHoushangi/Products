@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import Card from '@components/Card';
@@ -19,6 +19,7 @@ import PlaceholderList from '@components/PlaceholderList';
 import AppSearchBar from '@components/AppSearchBar';
 import {getSeatchText} from '@utils/stringUtils';
 import ErrorMessage from '@components/ErrorMessage';
+import colors from 'src/theme/colors';
 
 /**
  * ProductListScreen is for rendering list of products from server
@@ -38,6 +39,7 @@ function ProductListScreen() {
   const [offset, setOffset] = useState(0);
   const [hasMoreData, setHasMoreData] = useState(true);
   const [searchText, setSearchText] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   const renderItem = ({item, index}: RenderItemProps) => {
     const shouldAddSpacer =
@@ -56,11 +58,11 @@ function ProductListScreen() {
     );
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (clear = false) => {
     if (loading) return;
 
     try {
-      const response = await request(offset);
+      const response = await request(clear ? 0 : offset);
 
       if (!response || response.status !== 200) {
         return;
@@ -77,11 +79,13 @@ function ProductListScreen() {
         setHasMoreData(false);
       }
 
-      setAllProducts(prev => [...prev, ...items]);
+      setAllProducts(prev => (clear ? items : [...prev, ...items]));
 
-      setOffset(prev => prev + 1);
-    } catch (error) {
-      console.error('Error fetching products:', error);
+      setOffset(prev => (clear ? 1 : prev + 1));
+    } catch (err) {
+      console.error('Error fetching products:', err);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -148,6 +152,17 @@ function ProductListScreen() {
           }
           onEndReached={onEndReached}
           onEndReachedThreshold={0.3}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true);
+                fetchProducts(true);
+              }}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
         />
       )}
     </View>
