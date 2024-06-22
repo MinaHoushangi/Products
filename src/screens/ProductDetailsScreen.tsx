@@ -22,6 +22,7 @@ import useApi from 'src/hooks/useApi';
 import productDetailsApi from '@api/productDetails';
 import {MyTheme} from 'src/types/theme';
 import AppActivityIndicator from '@components/AppActivityIndicator';
+import ErrorMessage from '@components/ErrorMessage';
 
 type Details = {
   description: string;
@@ -39,7 +40,7 @@ function ProductDetailsScreen({route}: ProductDetailsScreenProps) {
   const theme: MyTheme = useTheme();
   const product: Product = route.params?.product;
 
-  const {loading, request} = useApi(productDetailsApi.getProductList);
+  const {error, loading, request} = useApi(productDetailsApi.getProductList);
 
   const [imageHeight, setImageHeight] = useState<number>(360);
   const [details, setDetails] = useState<Details | null>(null);
@@ -49,14 +50,14 @@ function ProductDetailsScreen({route}: ProductDetailsScreenProps) {
     try {
       const response = await request();
       if (!response || response.status !== 200) {
-        throw new Error("Can't get product details");
+        return;
       }
 
       setDetails({
         description: response.data?.body,
       });
     } catch (e) {
-      console.error(e);
+      console.error('Error fetching product detals', e);
     }
   };
 
@@ -99,6 +100,8 @@ function ProductDetailsScreen({route}: ProductDetailsScreenProps) {
         )}
 
         {loading && <AppActivityIndicator style={styles.text} />}
+
+        {error && !loading && <ErrorMessage onPress={fetchProdunctDetails} />}
       </View>
     </ScrollView>
   );

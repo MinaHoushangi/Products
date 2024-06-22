@@ -15,6 +15,7 @@ module.exports = {
           '@types': './src/types',
           '@constants': './src/constants',
           '@api': './src/api',
+          '@utils': './src/utils',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },

@@ -15,7 +15,10 @@ import productListApi from '@api/productList';
 import {NUMBER_OF_ITEMS_PER_API_CALL} from '@constants/config';
 import ListFooter from '@components/ListFooter';
 import ListItemSeparator from '@components/ListItemSeparator';
-import PlaceholderList from 'src/components/PlaceholderList';
+import PlaceholderList from '@components/PlaceholderList';
+import AppSearchBar from '@components/AppSearchBar';
+import {getSeatchText} from '@utils/stringUtils';
+import ErrorMessage from '@components/ErrorMessage';
 
 /**
  * ProductListScreen is for rendering list of products from server
@@ -28,11 +31,13 @@ type RenderItemProps = {
 
 function ProductListScreen() {
   const {navigate} = useNavigation();
-  const {loading, request} = useApi(productListApi.getProductList);
+  const {error, loading, request} = useApi(productListApi.getProductList);
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(allProducts);
   const [offset, setOffset] = useState(0);
   const [hasMoreData, setHasMoreData] = useState(true);
+  const [searchText, setSearchText] = useState('');
 
   const renderItem = ({item, index}: RenderItemProps) => {
     const shouldAddSpacer =
@@ -58,7 +63,7 @@ function ProductListScreen() {
       const response = await request(offset);
 
       if (!response || response.status !== 200) {
-        throw new Error('Failed to fetch products');
+        return;
       }
 
       const items: Product[] = response.data.map(item => ({
@@ -72,7 +77,8 @@ function ProductListScreen() {
         setHasMoreData(false);
       }
 
-      setProducts(prev => [...prev, ...items]);
+      setAllProducts(prev => [...prev, ...items]);
+
       setOffset(prev => prev + 1);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -86,12 +92,47 @@ function ProductListScreen() {
   };
 
   useEffect(() => {
+    const searchString = getSeatchText(searchText);
+
+    if (searchString.length === 0) {
+      setProducts(allProducts);
+      setHasMoreData(true);
+      return;
+    }
+
+    const searchedProducts = allProducts.filter(p =>
+      getSeatchText(p.name).includes(searchString),
+    );
+
+    setHasMoreData(false);
+    setProducts(searchedProducts);
+  }, [searchText, allProducts]);
+
+  const onClear = () => {
+    setProducts(allProducts);
+    setHasMoreData(true);
+    setSearchText('');
+  };
+
+  useEffect(() => {
     fetchProducts();
   }, []);
 
+  if (allProducts.length === 0 && error && !loading) {
+    return <ErrorMessage onPress={fetchProducts} />;
+  }
+
   return (
     <View style={styles.container}>
-      {products.length === 0 && loading ? (
+      <View style={styles.searchBarContainer}>
+        <AppSearchBar
+          onChangeText={setSearchText}
+          onClear={onClear}
+          placeholder="Search by product name"
+          value={searchText}
+        />
+      </View>
+      {allProducts.length === 0 && loading ? (
         <PlaceholderList />
       ) : (
         <FlatList
@@ -102,7 +143,9 @@ function ProductListScreen() {
           numColumns={LIST_NUM_OF_COLUMNS}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
-          ListFooterComponent={<ListFooter isVisible={hasMoreData} />}
+          ListFooterComponent={
+            <ListFooter isVisible={hasMoreData && products.length > 0} />
+          }
           onEndReached={onEndReached}
           onEndReachedThreshold={0.3}
         />
@@ -114,13 +157,17 @@ function ProductListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: SCREEN_PADDING,
     paddingBottom: 1,
   },
-  listItemContainer: {flexDirection: 'row'},
   horizontalSeparator: {
     width: horizontalScale(SCREEN_PADDING),
+  },
+  listItemContainer: {flexDirection: 'row'},
+  searchBarContainer: {
+    alignItems: 'center',
+    marginBottom: SCREEN_PADDING,
   },
 });
 
