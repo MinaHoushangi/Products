@@ -6,7 +6,6 @@ import {useState} from 'react';
  */
 
 export default apiFunc => {
-  const [data, setData] = useState();
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -15,11 +14,10 @@ export default apiFunc => {
     let response;
     try {
       response = await apiFunc(...args);
-      setData(response.data);
+
       setError(false);
     } catch (err) {
       setError(true);
-      setData(null);
     } finally {
       setLoading(false);
     }
@@ -27,5 +25,5 @@ export default apiFunc => {
     return response;
   };
 
-  return {data, error, loading, request};
+  return {error, loading, request};
 };
