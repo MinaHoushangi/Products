@@ -52,13 +52,16 @@ function ProductListScreen() {
   };
 
   const fetchProducts = async () => {
+    if (loading) return;
+
     try {
       const response = await request(offset);
+
       if (!response || response.status !== 200) {
         throw new Error('Failed to fetch products');
       }
 
-      const items: Product[] = await response.data.map(item => ({
+      const items: Product[] = response.data.map(item => ({
         id: item.id,
         name: item.title,
         image: item.url,
@@ -76,9 +79,9 @@ function ProductListScreen() {
     }
   };
 
-  const onEndReached = () => {
+  const onEndReached = async () => {
     if (!loading && hasMoreData) {
-      fetchProducts();
+      await fetchProducts();
     }
   };
 
@@ -101,6 +104,7 @@ function ProductListScreen() {
           showsVerticalScrollIndicator={false}
           ListFooterComponent={<ListFooter isVisible={hasMoreData} />}
           onEndReached={onEndReached}
+          onEndReachedThreshold={0.3}
         />
       )}
     </View>

@@ -73,6 +73,7 @@ const styles = (theme: MyTheme) =>
       backgroundColor: theme.colors.lightGrayBackground,
       borderRadius: BORDER_RADIUS,
       height: horizontalScale(161.5),
+      resizeMode: 'cover',
       width: '100%',
     },
     text: {

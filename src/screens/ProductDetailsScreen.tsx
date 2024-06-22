@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 300,
+    resizeMode: 'cover',
   },
   priceText: {
     fontWeight: 'bold',
