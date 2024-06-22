@@ -18,6 +18,7 @@ import ListItemSeparator from '@components/ListItemSeparator';
 import PlaceholderList from '@components/PlaceholderList';
 import AppSearchBar from '@components/AppSearchBar';
 import {getSeatchText} from '@utils/stringUtils';
+import ErrorMessage from '@components/ErrorMessage';
 
 /**
  * ProductListScreen is for rendering list of products from server
@@ -30,7 +31,7 @@ type RenderItemProps = {
 
 function ProductListScreen() {
   const {navigate} = useNavigation();
-  const {loading, request} = useApi(productListApi.getProductList);
+  const {error, loading, request} = useApi(productListApi.getProductList);
 
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>(allProducts);
@@ -62,7 +63,7 @@ function ProductListScreen() {
       const response = await request(offset);
 
       if (!response || response.status !== 200) {
-        throw new Error('Failed to fetch products');
+        return;
       }
 
       const items: Product[] = response.data.map(item => ({
@@ -116,6 +117,10 @@ function ProductListScreen() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  if (allProducts.length === 0 && error && !loading) {
+    return <ErrorMessage onPress={fetchProducts} />;
+  }
 
   return (
     <View style={styles.container}>
