@@ -10,6 +10,7 @@ API.
 - [Installation](#installation)
 - [Running the Application](#running-the-application)
 - [Troubleshooting](#troubleshooting)
+- [Known Issues and Proposed Fixes](#Known-Issues-and-Proposed-Fixes)
 
 ## Getting Started
 
@@ -89,3 +90,36 @@ If you encounter any issues, refer to the following:
 npx react-native doctor
 yarn start --reset-cache
 ```
+
+## Known Issues and Proposed Fixes
+
+### Issue: State Management Bug
+
+**Description:**
+There is a bug in the application caused by the inclusion of `allProducts` in the dependency array of the `useEffect` that filters products based on the search text. This leads to unnecessary re-renders and incorrect state updates.
+
+**Impact:**
+This bug can cause performance issues and incorrect filtering behavior when searching for products.
+
+**Proposed Fix:**
+1. **Remove `allProducts` from the dependency array:**
+   ```bash
+   useEffect(() => {
+     const searchString = getSeatchText(searchText);
+
+     if (searchString.length === 0) {
+       setProducts(allProducts);
+       setHasMoreData(true);
+       return;
+     }
+
+     const searchedProducts = allProducts.filter(p =>
+       getSeatchText(p.name).includes(searchString),
+     );
+
+     setHasMoreData(false);
+     setProducts(searchedProducts);
+   }, [searchText]);
+   ```
+
+
